@@ -3,7 +3,8 @@
   "short_name": "Jukebox",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#e3f2ff",
+  "theme_color": "#3c7dff",
   "icons": [
     {
       "src": "icon-192.png",
