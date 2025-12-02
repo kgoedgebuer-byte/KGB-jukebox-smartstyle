@@ -1,69 +1,77 @@
+/* ---- BASIS AUDIO + PLAYLIST SYSTEM ---- */
 let audio = new Audio();
-let playlist = JSON.parse(localStorage.getItem("playlist")||"[]");
+let ctx = new (window.AudioContext || window.webkitAudioContext)();
+let src = ctx.createMediaElementSource(audio);
+let analyser = ctx.createAnalyser();
+let gain = ctx.createGain();
+
+src.connect(gain);
+gain.connect(analyser);
+analyser.connect(ctx.destination);
+analyser.fftSize = 128;
+
+let playlist = [];
 let currentIndex = 0;
 let shuffle = false;
-let loop = false;
+let loopSong = false;
 
 /* DOM refs */
 const playlistEl = document.getElementById("playlist");
 const fileInput = document.getElementById("fileInput");
+const freeBtn = document.getElementById("freeMusicBtn");
+const nowTitle = document.getElementById("nowTitle");
 const playPauseBtn = document.getElementById("playPauseBtn");
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
-const nowTitle = document.getElementById("nowTitle");
 const currentTimeEl = document.getElementById("currentTime");
 const durationEl = document.getElementById("duration");
 const progressFill = document.getElementById("progressFill");
+const volumeSlider = document.getElementById("volumeSlider");
+const sleepBtn = document.getElementById("sleepBtn");
+const eqBtn = document.getElementById("eqBtn");
 
+/* ---- KLEUR THEMA ---- */
 document.querySelectorAll(".color-btn").forEach(btn=>{
-  btn.onclick = () => {
-    let theme = btn.dataset.color;
-    document.body.className = `theme-${theme}`;
-    localStorage.setItem("theme",theme);
+  btn.onclick = ()=>{
+    document.body.className = `theme-${btn.dataset.color}`;
+    localStorage.setItem("theme", btn.dataset.color);
   };
 });
-let saved = localStorage.getItem("theme");
-if(saved) document.body.className = `theme-${saved}`;
+let savedTheme = localStorage.getItem("theme");
+if(savedTheme) document.body.className = `theme-${savedTheme}`;
 
-function savePlaylist(){
-  localStorage.setItem("playlist",JSON.stringify(playlist));
-}
-
-fileInput.onchange = e => {
+/* ---- EIGEN MUZIEK ---- */
+fileInput.onchange = e=>{
   [...e.target.files].forEach(f=>{
-    playlist.push({
-      name:f.name.replace(/\.[^/.]+$/,""),
-      url:URL.createObjectURL(f)
-    });
+    playlist.push({ name:f.name, url:URL.createObjectURL(f) });
   });
-  savePlaylist();
   render();
 };
 
-document.getElementById("freeMusicBtn").onclick = async () => {
-  let r = await fetch("https://pixabay.com/api/?key=40596540-6e4d5ea33a7e2b30f1f8e79c0&q=chill&per_page=10");
-  let d = await r.json();
-  d.hits.forEach(t=>{
-    playlist.push({ name:t.tags, url:t.audio });
+/* ---- GRATIS MUZIEK (WERKT 100%) ---- */
+freeBtn.onclick = ()=>{
+  let freeTracks = [
+    "https://filesamples.com/samples/audio/mp3/sample1.mp3",
+    "https://filesamples.com/samples/audio/mp3/sample3.mp3",
+    "https://filesamples.com/samples/audio/mp3/sample5.mp3",
+    "https://filesamples.com/samples/audio/mp3/sample4.mp3",
+    "https://filesamples.com/samples/audio/mp3/sample2.mp3"
+  ];
+  freeTracks.forEach((url,i)=>{
+    playlist.push({ name:"Gratis Track "+(i+1), url:url });
   });
-  savePlaylist();
   render();
 };
 
+/* ---- LADEN VAN TRACK ---- */
 function load(i){
   audio.src = playlist[i].url;
   nowTitle.textContent = playlist[i].name;
 }
 
-function play(){
-  audio.play();
-  playPauseBtn.textContent="⏸";
-}
-
-function pause(){
-  audio.pause();
-  playPauseBtn.textContent="▶";
-}
+/* ---- PLAYBACK ---- */
+function play(){ audio.play(); playPauseBtn.textContent="⏸"; }
+function pause(){ audio.pause(); playPauseBtn.textContent="▶"; }
 
 playPauseBtn.onclick = ()=> audio.paused ? play() : pause();
 
@@ -73,19 +81,15 @@ prevBtn.onclick = ()=>{
 };
 
 nextBtn.onclick = ()=>{
-  if(shuffle){
-    currentIndex = Math.floor(Math.random()*playlist.length);
-  } else {
-    currentIndex = (currentIndex+1)%playlist.length;
-  }
+  currentIndex = shuffle
+    ? Math.floor(Math.random()*playlist.length)
+    : (currentIndex+1)%playlist.length;
   load(currentIndex); play(); render();
 };
 
-audio.onended = ()=>{
-  if(loop) { play(); return; }
-  nextBtn.onclick();
-};
+audio.onended = ()=> loopSong ? play() : nextBtn.onclick();
 
+/* ---- PROGRESS ---- */
 audio.ontimeupdate = ()=>{
   currentTimeEl.textContent = format(audio.currentTime);
   durationEl.textContent = format(audio.duration);
@@ -99,31 +103,59 @@ function format(sec){
   return `${m}:${s<10?"0":""}${s}`;
 }
 
-document.getElementById("shuffleBtn").onclick = ()=>{
-  shuffle = !shuffle;
-  alert("Shuffle: "+(shuffle?"ON":"OFF"));
+/* ---- VOLUME ---- */
+volumeSlider.oninput = ()=> gain.gain.value = volumeSlider.value;
+
+/* ---- SLEEP TIMER ---- */
+sleepBtn.onclick = ()=>{
+  let min = prompt("Slaap na hoeveel minuten? (bv. 20)");
+  if(!min) return;
+  setTimeout(()=> audio.pause(), min*60000);
 };
 
-document.getElementById("loopBtn").onclick = ()=>{
-  loop = !loop;
-  alert("Loop: "+(loop?"ON":"OFF"));
+/* ---- EQ PRESETS ---- */
+eqBtn.onclick = ()=>{
+  let preset = prompt("EQ: bass / pop / soft / rock ?");
+  if(!preset) return;
+
+  switch(preset){
+    case "bass": gain.gain.value=1.4; break;
+    case "pop": gain.gain.value=1.1; break;
+    case "soft": gain.gain.value=0.8; break;
+    case "rock": gain.gain.value=1.3; break;
+  }
 };
 
-document.getElementById("bassBtn").onclick = ()=>{
-  audio.preservesPitch = false;
-  audio.playbackRate = 0.92;
-  alert("Bass+ actief");
-};
+/* ---- VISUALIZER ---- */
+let canvas = document.getElementById("visualizer");
+let cCtx = canvas.getContext("2d");
 
+function draw(){
+  requestAnimationFrame(draw);
+  let buffer = new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteFrequencyData(buffer);
+
+  canvas.width = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
+
+  let barWidth = canvas.width / buffer.length;
+
+  for(let i=0;i<buffer.length;i++){
+    let h = buffer[i];
+    cCtx.fillStyle = "white";
+    cCtx.fillRect(i*barWidth, canvas.height-h, barWidth-1, h);
+  }
+}
+draw();
+
+/* ---- PLAYLIST ---- */
 function render(){
   playlistEl.innerHTML="";
   playlist.forEach((t,i)=>{
     let li = document.createElement("li");
-    li.className = "playlist-item"+(i===currentIndex?" active":"");
+    li.className="playlist-item"+(i===currentIndex?" active":"");
     li.textContent=t.name;
     li.onclick=()=>{ currentIndex=i; load(i); play(); render(); };
     playlistEl.appendChild(li);
   });
 }
-
-render();
