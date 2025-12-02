@@ -1,76 +1,87 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<meta charset="UTF-8">
-<title>KGB Jukebox</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>KGB Jukebox</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffe4f0" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-
-<div class="color-picker">
-  <div class="color-btn" data-color="pink"></div>
-  <div class="color-btn" data-color="lila"></div>
-  <div class="color-btn" data-color="mint"></div>
-  <div class="color-btn" data-color="sky"></div>
-  <div class="color-btn" data-color="peach"></div>
-</div>
-
-<div class="app">
-<header class="app-header">
-  <h1>KGB Jukebox V4</h1>
-</header>
-
-<button id="freeMusicBtn" class="btn-primary fullwidth">+ Gratis Muziek Laden</button>
-
-<main class="app-main">
-
-<section class="card upload-card">
-  <h2>📁 Eigen Muziek</h2>
-  <label class="btn-primary">
-    <input id="fileInput" type="file" accept="audio/*" multiple hidden>
-    + Voeg lokale muziek toe
-  </label>
-</section>
-
-<section class="card now-playing-card">
-  <h2>▶ Nu Speelt</h2>
-  <div id="nowTitle" class="now-title">Niets gekozen</div>
-
-  <canvas id="visualizer"></canvas>
-
-  <div class="progress-row">
-    <span id="currentTime">0:00</span>
-    <div class="progress-bar"><div id="progressFill"></div></div>
-    <span id="duration">0:00</span>
+  <div class="color-picker">
+    <button class="color-btn" data-theme="pink"></button>
+    <button class="color-btn" data-theme="lila"></button>
+    <button class="color-btn" data-theme="mint"></button>
+    <button class="color-btn" data-theme="sky"></button>
+    <button class="color-btn" data-theme="peach"></button>
   </div>
 
-  <input type="range" id="volumeSlider" min="0" max="1" step="0.01">
+  <div class="app">
+    <header class="app-header">
+      <h1>KGB Jukebox</h1>
+      <p>Full option pastel speler</p>
+    </header>
 
-  <div class="controls-row">
-    <button id="prevBtn" class="control-btn">⏮</button>
-    <button id="playPauseBtn" class="control-btn big">▶</button>
-    <button id="nextBtn" class="control-btn">⏭</button>
+    <button id="freeMusicBtn" class="btn-primary fullwidth">
+      + Gratis muziek laden (uit GitHub-map)
+    </button>
+
+    <main class="app-main">
+      <section class="card upload-card">
+        <h2>📁 Eigen muziek</h2>
+        <p class="small">
+          Kies bestanden van je toestel (kunnen niet 100% blijvend onthouden worden – beveiliging browser).
+        </p>
+        <label class="btn-primary">
+          <input id="fileInput" type="file" accept="audio/*" multiple hidden />
+          + Voeg lokale muziek toe
+        </label>
+      </section>
+
+      <section class="card now-playing-card">
+        <h2>▶ Nu speelt</h2>
+        <div id="nowTitle" class="now-title">Nog niets gekozen</div>
+
+        <div class="progress-row">
+          <span id="currentTime" class="time-label">0:00</span>
+          <div class="progress-bar">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <span id="duration" class="time-label">0:00</span>
+        </div>
+
+        <input
+          id="volumeSlider"
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value="0.8"
+          class="volume-slider"
+        />
+
+        <div class="controls-row">
+          <button id="prevBtn" class="control-btn">⏮</button>
+          <button id="playPauseBtn" class="control-btn big">▶</button>
+          <button id="nextBtn" class="control-btn">⏭</button>
+        </div>
+
+        <div class="extra-controls">
+          <button id="shuffleBtn" class="small-btn">🔀 Shuffle</button>
+          <button id="loopBtn" class="small-btn">🔁 Loop</button>
+          <button id="sleepBtn" class="small-btn">⏲ Sleep</button>
+          <button id="spotifyBtn" class="small-btn">🎧 Spotify</button>
+        </div>
+      </section>
+
+      <section class="card playlist-card">
+        <h2>📂 Playlist</h2>
+        <ul id="playlist" class="playlist-list"></ul>
+      </section>
+    </main>
   </div>
 
-  <div class="extra-controls">
-    <button id="shuffleBtn" class="small-btn">🔀 Shuffle</button>
-    <button id="loopBtn" class="small-btn">🔁 Loop</button>
-    <button id="sleepBtn" class="small-btn">⏲ Sleep</button>
-    <button id="eqBtn" class="small-btn">🎚 EQ</button>
-  </div>
-</section>
-
-<section class="card playlist-card">
-  <h2>📂 Playlist</h2>
-  <ul id="playlist"></ul>
-</section>
-
-</main>
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
