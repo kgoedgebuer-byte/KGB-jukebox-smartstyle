@@ -1,39 +1,127 @@
-/* Pastel KGB SmartShop look */
 body {
   font-family: system-ui;
-  background: radial-gradient(circle at top left, #ffe4f0, #e0f4ff);
-  margin: 0; padding: 16px;
-  display: flex; justify-content: center;
+  margin: 0;
+  padding: 20px;
+  background: var(--bg);
+  transition: 0.3s;
 }
 
-.app { width: 100%; max-width: 420px; }
+/* THEMA KLEUREN */
+.theme-pink { --bg:#ffe4f0; --accent:#ff6fa8; }
+.theme-lila { --bg:#f4e4ff; --accent:#a66bff; }
+.theme-mint { --bg:#e4fff3; --accent:#33cc99; }
+.theme-sky  { --bg:#e4f3ff; --accent:#4da6ff; }
+.theme-peach{ --bg:#ffe9dd; --accent:#ff9966; }
 
+/* Color picker */
+.color-picker {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.color-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.color-btn[data-color="pink"] { background:#ffb5d6; }
+.color-btn[data-color="lila"] { background:#d6b4ff; }
+.color-btn[data-color="mint"] { background:#a8fcd2; }
+.color-btn[data-color="sky"]  { background:#a8d7ff; }
+.color-btn[data-color="peach"]{ background:#ffcaad; }
+
+/* Cards */
 .card {
-  background: #ffffffcc; padding: 16px; border-radius: 22px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.1);
-  margin-bottom: 12px;
+  background: #fff;
+  padding: 16px;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
 }
 
-.btn-primary {
-  display: inline-block; padding: 10px 18px; border-radius: 999px;
-  background: linear-gradient(135deg, #ff9ecb, #ff6fa8);
-  color: white; font-weight: 700; cursor: pointer;
+/* Controls */
+.controls-row {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 12px;
 }
 
 .control-btn {
-  width: 44px; height: 44px; border: none; border-radius: 999px;
-  background: white; box-shadow: 0 4px 12px rgba(0,0,0,.15);
-  font-size: 20px; cursor: pointer;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: none;
+  background:#fff;
+  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  cursor:pointer;
+  font-size:20px;
 }
 
 .control-btn.big {
-  width: 60px; height: 60px; background: #ff9ecb; color: white;
+  width:60px;
+  height:60px;
+  background:var(--accent);
+  color:#fff;
+}
+
+/* Extra buttons */
+.extra-controls {
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  margin-top:12px;
+}
+
+.small-btn {
+  padding:6px 12px;
+  border-radius:12px;
+  background:var(--accent);
+  color:#fff;
+  border:none;
+  cursor:pointer;
+}
+
+/* Progress Bar */
+.progress-row {
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.progress-bar {
+  flex:1;
+  height:6px;
+  background:#ddd;
+  border-radius:999px;
+  overflow:hidden;
+}
+
+#progressFill {
+  height:100%;
+  background:var(--accent);
+  width:0%;
+}
+
+/* Playlist */
+#playlist {
+  list-style:none;
+  padding:0;
+  margin:0;
 }
 
 .playlist-item {
-  padding: 8px 10px; border-radius: 14px; background: white;
-  margin-bottom: 6px; cursor: pointer;
+  padding:10px;
+  border-radius:12px;
+  background:#f9f9f9;
+  margin-bottom:6px;
+  cursor:pointer;
 }
+
 .playlist-item.active {
-  background: linear-gradient(90deg, #ffe4f0, #e0f2fe);
+  background:var(--accent);
+  color:white;
 }
