@@ -1,15 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
-    <title>KGB Jukebox</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KGB Jukebox</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>KGB Jukebox</h1>
-    <div id="app"></div>
-    <script src="script.js"></script>
+<h1>KGB Jukebox</h1>
+
+<h2>🎵 Eigen muziek</h2>
+<input type="file" id="fileInput" multiple accept="audio/*">
+
+<h2>📻 Nu speelt</h2>
+<audio id="player" controls></audio>
+
+<h2>📜 Playlist</h2>
+<ul id="playlist"></ul>
+
+<button id="spotifyBtn">Open Spotify</button>
+
+<script src="script.js"></script>
 </body>
 </html>

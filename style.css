@@ -1,0 +1,16 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+h1, h2 {
+    font-weight: bold;
+}
+
+button {
+    padding: 10px 20px;
+    border-radius: 10px;
+    background: #77aaff;
+    color: white;
+    border: none;
+}
