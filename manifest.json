@@ -1,0 +1,8 @@
+{
+  "name": "KGB Mini Jukebox",
+  "short_name": "KGB Jukebox",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffe4f0",
+  "theme_color": "#ffe4f0"
+}
